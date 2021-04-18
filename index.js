@@ -1,15 +1,22 @@
-function success(position) {
-  let latitude = position.coords.latitude;
-  let longitude = position.coords.longitude;
-  fetch(
-    `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=6a53842cf28d4ba2ae0c14d99291b934`
-  )
-    .then((response) => response.json())
-    .then(console.log);
-}
+const getLocation = async (position) => {
+  const latitude = position.coords.latitude;
+  const longitude = position.coords.longitude;
+  try {
+    const response = await fetch(
+      `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=6a53842cf28d4ba2ae0c14d99291b934`
+    );
+    const data = await response.json();
+    console.log(data);
+  } catch (err) {
+    if (err instanceof TypeError) {
+      console.log(err.message);
+    }
+  }
+};
 
-function error(err) {
-  console.warn(`Error (${err.code}): ${err.message}`);
-}
-
-navigator.geolocation.getCurrentPosition(success, error);
+navigator.geolocation.getCurrentPosition(
+  (position) => getLocation(position),
+  (err) => {
+    console.log(err.message);
+  }
+);
